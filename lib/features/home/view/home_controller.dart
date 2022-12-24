@@ -2,14 +2,15 @@ import 'package:paralelism/core/di/di.dart';
 import 'package:paralelism/features/home/domain/use_cases/read_data_use_case.dart';
 
 abstract class HomeController {
-  Future<Map<String, dynamic>> readData();
+  Future<List<Map<String, dynamic>>> readData();
 }
 
 class HomeControllerImpl implements HomeController {
-  final _readDataUseCase = Di.getIt.get<ReadDataUseCase>();
+  final _readDataUseCase = Di.instance.get<ReadDataUseCase>();
 
   @override
-  Future<Map<String, dynamic>> readData() async {
-    return {};
+  Future<List<Map<String, dynamic>>> readData() async {
+    final data = await _readDataUseCase();
+    return data;
   }
 }

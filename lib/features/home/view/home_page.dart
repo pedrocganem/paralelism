@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:paralelism/core/di/di.dart';
 import 'package:paralelism/features/home/view/home_controller.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,12 +13,24 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _counter = 0;
+  bool isLoading = false;
 
-  final _controller = GetIt.instance.get<HomeController>();
+  final _controller = Di.instance.get<HomeController>();
 
   void _incrementCounter() {
     setState(() {
       _counter++;
+    });
+  }
+
+  void _readData() {
+    setState(() {
+      isLoading = true;
+    });
+    _controller.readData().then((value) {
+      setState(() {
+        isLoading = false;
+      });
     });
   }
 
@@ -44,9 +56,11 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _readData,
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: !isLoading
+            ? const Icon(Icons.add)
+            : const Center(child: CircularProgressIndicator(color: Colors.white,)),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
